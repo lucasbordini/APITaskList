@@ -18,5 +18,10 @@ module.exports = (sequelize, DataType) => {
             defaultValue: false
         }
     });
+
+    Tasks.associate = models => { 
+        Tasks.belongsTo(models.Users);
+    };
+
     return Tasks;
 };
