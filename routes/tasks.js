@@ -11,8 +11,13 @@ module.exports = app => {
     const Tasks = app.db.models.Tasks;
 
     app.route('/tasks')
+        .all(app.auth.authenticate())
         .get((req, res) => {
-            Tasks.findAll()
+            Tasks.findAll({
+                where: { 
+                    userId: req.user.id
+                }
+            })
                 .then(result => {
                     res.json(result);
                 })
@@ -31,7 +36,9 @@ module.exports = app => {
         ], (req, res) => {
             const errors = validationResult(req);
             if (errors.isEmpty()) {
-                Tasks.create(matchedData(req))
+                const task = matchedData(req);
+                task.userId = req.user.id;
+                Tasks.create(task)
                     .then(result => {
                         res.json(result);
                     })
@@ -49,8 +56,14 @@ module.exports = app => {
         });
 
     app.route('/tasks/:id')
+        .all(app.auth.authenticate())
         .get((req, res) => {
-            Tasks.findById(req.params.id)
+            Tasks.findOne({ 
+                where: { 
+                    id: req.params.id,
+                    userId: req.user.id
+                }
+            })
                 .then(reslt => {
                     res.json(result);
                 })
@@ -73,7 +86,8 @@ module.exports = app => {
             if (errors.isEmpty) {
                 Tasks.update(matchedData(req), {
                         where: {
-                            id: req.params.id
+                            id: req.params.id,
+                            userId: req.user.id
                         }
                     })
                     .then(() => {
@@ -93,7 +107,8 @@ module.exports = app => {
         .delete((req, res) => {
             Tasks.destroy({
                     where: {
-                        id: req.params.id
+                        id: req.params.id,
+                        userId: req.user.id
                     }
                 })
                 .then(() => {

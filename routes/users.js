@@ -14,7 +14,11 @@ module.exports = app => {
                         msg: 'Email already in use'
                     });
                 }
-                const result = await Users.create(req.body);
+                let result = await Users.create(req.body);
+
+                result = await Users.findById(result.id, { 
+                    attributes: ['id', 'name', 'email']
+                });
                 res.json(result);
             } catch (error) {
                 res.status(500).json({

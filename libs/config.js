@@ -6,7 +6,7 @@ module.exports = {
         dialect: 'sqlite',
         storage: 'bootcamp.sqlite',
         define: { 
-            uderscored: true
+            underscored: false
         }
     },
     jwtSecret: 'B007C4MP-AP1',
